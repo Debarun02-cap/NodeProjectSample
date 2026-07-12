@@ -1,0 +1,40 @@
+<%- include('../partials/head')%>
+  <link rel="stylesheet" href="/citizen.css">
+</head>
+<body>
+  <%- include('../partials/header')%>
+
+  <main class="page">
+    <form class="complaint-card" action="/user/register" method="post" enctype="multipart/form-data">
+      <select class="field" name="issuetype" required aria-label="Issue type">
+        <option value="" selected disabled>Choose Issue Type</option>
+        <option value="water-supply-sewerage">Water Supply & Sewerage</option>
+        <option value="roads-infrastructure">Roads & Infrastructure</option>
+        <option value="garbage-sanitation">Garbage & Sanitation</option>
+        <option value="others">Others</option>
+      </select>
+
+      <input class="field" type="text" name="title" placeholder="Short title (e.g., Leakage)" required>
+
+      <textarea class="field field--textarea" name="description" placeholder="Describe your issue..." rows="5" required></textarea>
+
+      <div class="upload-block">
+        <div class="upload-title">Upload Problem Photo</div>
+        <input class="field" type="file" name="photo" id="photoInput" accept="image/jpeg,image/jpg" capture="environment">
+        <button type="button" class="camera-btn" id="cameraBtn">📷 Use Camera</button>
+        <div id="photoPreview" style="margin-top: 10px; display: none;">
+          <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 6px;">
+        </div>
+      </div>
+
+      <input class="field" type="text" name="locationUrl" placeholder="Paste Google Maps link OR full iframe embed code" required>
+
+      <button class="submit-btn" type="submit">Submit Complaint</button>
+    </form>
+    
+  </main>
+
+  <script src="/auth.js" defer></script>
+  <script src="/upload.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+/* Admin complaints list (card layout like screenshot) */
+
+.admin-section{
+  width: min(1200px, 96vw);
+}
+
+.admin-title{
+  margin: 0 0 20px;
+  font-size: 34px;
+  font-weight: 900;
+  text-align: center;
+  color: #111827;
+}
+
+.complaint-list{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 100%;
+}
+
+.complaint-card{
+  display: grid;
+  grid-template-columns: 220px 1fr 260px;
+  gap: 22px;
+  align-items: center;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 16px 34px rgba(0,0,0,.18);
+  padding: 18px;
+}
+
+.complaint-img{
+  width: 220px;
+  height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #e5e7eb;
+  border: 1px solid rgba(17,24,39,.18);
+}
+
+.complaint-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.complaint-body{
+  min-width: 0;
+}
+
+.complaint-title{
+  margin: 0 0 8px;
+  font-size: 26px;
+  font-weight: 900;
+  color: #2563eb;
+}
+
+.complaint-meta{
+  color: #4b5563;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.complaint-meta span{
+  font-weight: 800;
+  color: #111827;
+}
+
+.complaint-desc{
+  margin: 0 0 10px;
+  color: #374151;
+  line-height: 1.6;
+  max-width: 70ch;
+}
+
+.complaint-status{
+  color: #374151;
+  font-weight: 800;
+}
+
+.badge{
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-weight: 900;
+  font-size: 13px;
+  margin-left: 6px;
+}
+.badge--pending{
+  background: #fef3c7;
+  color: #92400e;
+}
+.badge--inprogress{
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+.badge--resolved{
+  background: #dcfce7;
+  color: #166534;
+}
+
+.complaint-actions{
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 900;
+  text-decoration: none;
+  color: #fff;
+  min-width: 120px;
+  box-shadow: 0 12px 22px rgba(0,0,0,.18);
+  transition: transform 160ms ease, filter 160ms ease, box-shadow 160ms ease;
+}
+
+.btn:hover{
+  transform: translateY(-1px);
+  box-shadow: 0 16px 26px rgba(0,0,0,.22);
+}
+
+.btn--primary{ background: #3b82f6; }
+.btn--success{ background: #16a34a; }
+
+/* Admin status update form card */
+.status-card{
+  width: min(520px, 92vw);
+  margin: 40px auto 0;
+  background: #bcdcff;
+  border-radius: 10px;
+  padding: 26px 28px;
+  box-shadow: 0 16px 38px rgba(0,0,0,.18);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.status-field{
+  width: 100%;
+  border: 1px solid rgba(17,24,39,.35);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-size: 16px;
+  background: #fff;
+  outline: none;
+}
+.status-field:focus{
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,.22);
+}
+.status-field--textarea{
+  resize: none;
+  min-height: 120px;
+}
+
+.status-upload-block{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.status-upload-title{
+  font-weight: 800;
+  color: #111827;
+}
+
+.status-field[type="file"]{
+  padding: 8px;
+  font-size: 14px;
+}
+
+.camera-btn{
+  margin-top: 8px;
+  padding: 10px 16px;
+  border: 1px solid rgba(37,99,235,.6);
+  border-radius: 6px;
+  background: #fff;
+  color: #2563eb;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,.1);
+  transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.camera-btn:hover{
+  background: #eff6ff;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(0,0,0,.14);
+}
+
+.status-submit-btn{
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  border-radius: 6px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 12px 22px rgba(0,0,0,.22);
+  transition: transform 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+.status-submit-btn:hover{
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 16px 26px rgba(0,0,0,.26);
+}
+
+/* Optional tweak for work status history cards */
+.status-history-card{
+  margin-top: 18px;
+}
+
+.status-photo{
+  margin-top: 12px;
+  width: 820px;
+  height: 720px;
+}
+.status-photo img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Admin complaint detail card */
+.complaint-detail-card{
+  margin-top: 24px;
+  display: grid;
+  grid-template-columns: 260px minmax(320px, 1.4fr);
+  grid-template-rows: auto 260px;
+  grid-template-areas:
+    "img body"
+    "map map";
+  gap: 24px;
+  align-items: stretch;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 18px 38px rgba(0,0,0,.2);
+  padding: 22px;
+}
+
+.complaint-detail-img{
+  grid-area: img;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #e5e7eb;
+  border: 1px solid rgba(17,24,39,.16);
+}
+.complaint-detail-img img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.complaint-detail-map{
+  grid-area: map;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(17,24,39,.16);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.5);
+  min-height: 260px;
+}
+.complaint-detail-map iframe{
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.complaint-detail-body{
+  grid-area: body;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+@media (max-width: 1024px){
+  .complaint-detail-card{
+    grid-template-columns: 220px 1fr;
+    grid-template-rows: auto 260px;
+    grid-template-areas:
+      "img body"
+      "map map";
+  }
+  .complaint-detail-img{ grid-area: img; }
+  .complaint-detail-map{ grid-area: map; }
+  .complaint-detail-body{ grid-area: body; }
+}
+
+@media (max-width: 720px){
+  .complaint-detail-card{
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto auto;
+  }
+}
+
+@media (max-width: 920px){
+  .complaint-card{
+    grid-template-columns: 160px 1fr;
+    grid-template-areas:
+      "img body"
+      "actions actions";
+  }
+  .complaint-img{
+    width: 160px;
+    height: 130px;
+  }
+  .complaint-actions{
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 520px){
+  .complaint-card{
+    grid-template-columns: 1fr;
+  }
+  .complaint-img{
+    width: 100%;
+    height: 180px;
+  }
+  .complaint-title{ font-size: 22px; }
+}
+
+

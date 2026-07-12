@@ -1,0 +1,39 @@
+<%- include('../partials/head')%>
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <%- include('../partials/header')%>
+
+  <main class="page">
+    <form class="status-card" action="/admin/statusUpdate/<%= complaintId %>" method="post" enctype="multipart/form-data">
+      <select class="status-field" name="workstatus" required aria-label="Issue type">
+        <option value="" selected disabled>Choose Status</option>
+        <option value="pending">Pending</option>
+        <option value="work-on-progress">Work on Progress</option>
+        <option value="completed">Completed</option>
+      </select>
+
+      <input class="status-field" type="text" name="title" placeholder="Short title (e.g., Leakage)" required>
+
+      <textarea class="status-field status-field--textarea" name="description" placeholder="Describe your issue..." rows="5" required></textarea>
+
+      <div class="status-upload-block">
+        <div class="status-upload-title">Upload Work Photo</div>
+        <input class="status-field" type="file" name="photo" id="photoInput" accept="image/jpeg,image/jpg" capture="environment">
+        <button type="button" class="camera-btn" id="cameraBtn" style="margin-top: 8px;">📷 Use Camera</button>
+        <div id="photoPreview" style="margin-top: 10px; display: none;">
+          <img id="previewImg" src="" alt="Preview" style="max-width: 200px; max-height: 200px; border-radius: 6px;">
+        </div>
+      </div>
+
+      <input class="status-field" type="datetime-local" name="dateTime">
+
+      <button class="status-submit-btn" type="submit">Update Status</button>
+    </form>
+    
+  </main>
+
+  <script src="/auth.js" defer></script>
+  <script src="/upload.js" defer></script>
+</body>
+</html>

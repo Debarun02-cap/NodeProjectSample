@@ -1,0 +1,16 @@
+<header class="topbar">
+  <a class="home-btn" href="/">Home</a>
+
+  <div class="brand">
+    <img class="brand-logo" src="/logo.JPG" alt="FixMyCity logo">
+    <div class="brand-name">FixMyCity</div>
+  </div>
+
+  <% if (typeof isLoggedIn !== 'undefined' && isLoggedIn) { %>
+    <form action="/auth/logout" method="post" style="position:absolute; right:28px; top:28px;">
+      <button type="submit" class="home-btn home-btn--right" style="position:static;">Logout</button>
+    </form>
+  <% } else { %>
+    <a class="home-btn home-btn--right" href="/auth/login">Login</a>
+  <% } %>
+</header>

@@ -1,0 +1,49 @@
+<%- include('../partials/head') %>
+</head>
+<body>
+  
+  <%- include('../partials/header')%>
+  <main class="page">
+    <% if (userRole === 'admin') { %>
+    <section class="role-card">
+      <a class="role-btn role-btn--admin" href="/admin/home">Admin</a>
+    </section>
+    <% } else if (userRole === 'citizen') { %>
+    <section class="role-card">
+      <a class="role-btn role-btn--citizen" href="/user/home">Citizen</a>
+    </section>
+    <% } %>
+    <section class="info-cards">
+      <div class="info-card info-card--move-x" data-dir="ltr">
+        <h2>For Better City</h2>
+        <p>
+          Citizens can use the app to actively participate in building a better city by reporting issues such as potholes,
+          broken streetlights, or illegal dumping with ease. The app allows users to attach photos and specify the exact
+          location, ensuring efficient municipal response. Residents receive real-time updates on the progress of their
+          reports and resolution status.
+        </p>
+      </div>
+
+      <div class="info-card info-card--move-x" data-dir="rtl">
+        <h2>For Better Governance</h2>
+        <p>
+          The platform enables municipal authorities to manage civic complaints through a centralized digital dashboard.
+          Automated prioritization based on issue frequency and severity helps officials allocate resources effectively,
+          reduce response time, and ensure transparency in governance.
+        </p>
+      </div>
+
+      <div class="info-card info-card--move-x" data-dir="ltr">
+        <h2>For Better Citizen Engagement</h2>
+        <p>
+          By providing a simple and transparent reporting mechanism, the app encourages active citizen participation.
+          Verified user reports, status notifications, and feedback mechanisms build trust between residents and authorities,
+          fostering a sense of shared responsibility in urban development.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script src="/auth.js" defer></script>
+</body>
+</html>

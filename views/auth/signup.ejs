@@ -1,0 +1,70 @@
+<%- include('../partials/head')%>
+  <link rel="stylesheet" href="/citizen.css">
+</head>
+<body>
+  <%- include('../partials/header')%>
+
+  <main class="page">
+    <form class="complaint-card" action="/auth/signup" method="post">
+      <h3 class="signup-title">Create your FixMyCity account</h3>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="firstname">First Name</label>
+          <input class="field" type="text" name="firstname" placeholder="Enter your first name" required>
+        </div>
+        <div class="field-group">
+          <label for="lastname">Last Name</label>
+          <input class="field" type="text" name="lastname" placeholder="Enter your last name" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="email">Email</label>
+          <input class="field" type="email" name="email" placeholder="Enter your email" required>
+        </div>
+        <div class="field-group">
+          <label for="mobile">Mobile</label>
+          <input class="field" type="text" name="mobile" placeholder="Enter your mobile number" required>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="address">Address</label>
+          <input class="field" type="text" name="address" placeholder="Enter your address" required>
+        </div>
+        <div class="field-group">
+          <label for="state">State</label>
+          <input class="field" type="text" name="state" placeholder="Enter your state" required>
+        </div>
+      </div>
+
+      <label for="city">City</label>
+      <input class="field" type="text" name="city" placeholder="Enter your city" required>
+
+      <label for="aadhar">Aadhar Number</label>
+      <input class="field" type="text" name="aadhar" placeholder="Enter your Aadhar number" required>
+
+      <label for="password">Password</label>
+      <input class="field" type="password" name="password" placeholder="Create a password" required aria-label="Password">
+
+      <div class="login-role-group">
+        <label class="login-role-option">
+          <input type="radio" name="role" value="admin" required>
+          <span>Admin</span>
+        </label>
+        <label class="login-role-option">
+          <input type="radio" name="role" value="citizen" required>
+          <span>Citizen</span>
+        </label>
+      </div>
+
+      <button class="submit-btn" type="submit">Sign up</button>
+    </form>
+  </main>
+
+  <script src="/auth.js" defer></script>
+</body>
+</html>

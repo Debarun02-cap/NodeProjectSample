@@ -1,0 +1,40 @@
+<%- include('../partials/head')%>
+  <link rel="stylesheet" href="/citizen.css">
+</head>
+<body>
+  <%- include('../partials/header')%>
+
+  <main class="page">
+    <form class="complaint-card" action="/auth/login" method="post">
+      <h3 class="login-title">Login Here</h3>
+
+      <input class="field" type="text" name="username" placeholder="Enter registered email or mobile number" required aria-label="Username">
+
+      <input class="field" type="password" name="password" placeholder="Enter password" required aria-label="Password">
+
+      <div class="login-role-group">
+        <label class="login-role-option">
+          <input type="radio" name="role" value="admin" required>
+          <span>Admin</span>
+        </label>
+        <label class="login-role-option">
+          <input type="radio" name="role" value="citizen" required>
+          <span>Citizen</span>
+        </label>
+      </div>
+
+      <button class="submit-btn" type="submit">Login</button>
+
+      <div class="signup-row">
+        <span class="signup-text">Don't have an account?</span>
+        <a class="signup-btn" href="/auth/signup">Sign up</a>
+      </div>
+    </form>
+    <% if (typeof errorMessage !== 'undefined' && errorMessage) { %>
+      <p style="color:#b91c1c; margin-top:10px; text-align:center;"><%= errorMessage %></p>
+    <% } %>
+  </main>
+
+  <script src="/auth.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<%- include('../partials/head') %>
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <%- include('../partials/header')%>
+
+  <main class="page">
+    <section class="admin-section">
+      <h2 class="admin-title">All Registered Complaints</h2>
+      <ul class="complaint-list">
+        <% registeredComplaints.forEach(complaint=>{ %>
+          <% 
+            const latest = (statusMap && statusMap[complaint.id]) || null;
+            const rawStatus = latest ? latest.workstatus : (complaint.status || 'pending');
+            const st = String(rawStatus || 'pending').toLowerCase();
+            const badgeClass = st.includes('progress') ? 'badge--inprogress' : (st.includes('complete') ? 'badge--resolved' : 'badge--pending');
+          %>
+          <li class="complaint-card">
+            <% if (complaint.photoUrl) { %>
+            <div class="complaint-img">
+              <img src="/photo/<%= complaint.photoUrl %>" alt="complaint photo">
+            </div>
+            <% } %>
+
+            <div class="complaint-body">
+              <h3 class="complaint-title"><%= complaint.title %></h3>
+              <div class="complaint-meta">Category: <span><%= complaint.issueType || complaint.issuetype || 'N/A' %></span></div>
+              <p class="complaint-desc"><%= complaint.description %></p>
+              <div class="complaint-status">
+                Status: 
+                <span class="badge <%= badgeClass %>">
+                  <%= latest ? latest.workstatus : (complaint.status || 'pending') %>
+                </span>
+              </div>
+            </div>
+
+            <div class="complaint-actions">
+              <a class="btn btn--primary" href="/admin/complaintDetails/<%= complaint.id %>">View Details</a>
+              <a class="btn btn--success" href="/admin/updateStatus/<%= complaint.id %>">Update Status</a>
+            </div>
+          </li>
+        <% }); %>
+      </ul>
+    </section>
+
+    
+  </main>
+
+  <script src="/auth.js" defer></script>
+</body>
+</html>

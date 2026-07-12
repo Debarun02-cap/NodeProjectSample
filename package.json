@@ -1,0 +1,34 @@
+{
+  "name": "npm-project",
+  "version": "1.0.0",
+  "description": "This project is for Fix My City",
+  "keywords": [],
+  "homepage": "https://github.com/Debarun02-cap/NodeProjectSample#readme",
+  "bugs": {
+    "url": "https://github.com/Debarun02-cap/NodeProjectSample/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Debarun02-cap/NodeProjectSample.git"
+  },
+  "license": "ISC",
+  "author": "Debarun",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon app.js"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.1",
+    "dotenv": "^17.4.2",
+    "ejs": "^3.1.10",
+    "express": "^5.2.1",
+    "express-session": "^1.18.2",
+    "mongodb": "^7.0.0",
+    "multer": "^1.4.5-lts.1"
+  }
+}

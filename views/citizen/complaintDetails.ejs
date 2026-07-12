@@ -1,0 +1,79 @@
+<%- include('../partials/head') %>
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+  <%- include('../partials/header')%>
+
+  <main class="page">
+    <section class="admin-section">
+      <h1 class="admin-title">Complaint Details</h1>
+
+      <div class="complaint-detail-card">
+        <% if (complaint.photoUrl) { %>
+        <div class="complaint-detail-img">
+          <img src="/photo/<%= complaint.photoUrl %>" alt="complaint photo">
+        </div>
+        <% } %>
+
+        <div class="complaint-detail-map">
+          <% if (complaint.locationUrl && complaint.locationUrl.includes('<iframe')) { %>
+            <%- complaint.locationUrl %>
+          <% } else { %>
+            <iframe
+              src="<%= complaint.locationUrl %>"
+              frameborder="0"
+              allowfullscreen=""
+              loading="lazy"
+            ></iframe>
+          <% } %>
+        </div>
+
+        <div class="complaint-detail-body">
+          <h2 class="complaint-title"><%= complaint.title %></h2>
+          <p class="complaint-meta">
+            Issue Category: <span><%= complaint.issuetype %></span>
+          </p>
+          <p class="complaint-desc"><%= complaint.description %></p>
+
+          <div class="complaint-actions">
+            <a class="btn btn--primary" href="/user/home">Dashboard</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <% if (statusUpdates && statusUpdates.length) { %>
+      <section class="admin-section">
+        <h1 class="admin-title">Work Status</h1>
+
+        <% statusUpdates.forEach(function(st){ 
+             const rawStatus = st.workstatus || 'pending';
+             const s = String(rawStatus).toLowerCase();
+             const badgeClass = s.includes('progress') ? 'badge--inprogress' : (s.includes('complete') ? 'badge--resolved' : 'badge--pending');
+        %>
+          <div class="complaint-detail-card status-history-card">
+            <div class="complaint-detail-body">
+              <h2 class="complaint-title"><%= st.title %></h2>
+              <p class="complaint-meta">
+                Status: 
+                <span class="badge <%= badgeClass %>"><%= st.workstatus %></span>
+              </p>
+              <p class="complaint-desc"><%= st.description %></p>
+              <% if (st.photoUrl) { %>
+                <div class="complaint-img status-photo">
+                  <img src="/photo/<%= st.photoUrl %>" alt="status photo">
+                </div>
+              <% } %>
+              <% if (st.dateTime) { %>
+                <p class="complaint-meta">Updated at: <span><%= st.dateTime %></span></p>
+              <% } %>
+            </div>
+          </div>
+        <% }); %>
+      </section>
+    <% } %>
+  </main>
+
+  <script src="/auth.js" defer></script>
+</body>
+</html>
