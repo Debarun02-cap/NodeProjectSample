@@ -1,86 +1,116 @@
-# FixMyCity 🏙️
-It is a cross-platform (Web+Android) civic issue reporting system. 
-FixMyCity is a civic issue reporting and management platform designed to improve communication between citizens and municipal authorities. The application enables users to report local civic problems digitally and allows authorities to track, manage, and update the status of reported issues in a centralized system.
+# FixMyCity 🏙️ — Backend (NodeProjectSample)
+
+A civic issue reporting and management platform connecting citizens with municipal authorities. Citizens report local problems digitally; authorities track, manage, and update status in a centralized system.
+
+This repo is the **Node.js/Express + MongoDB backend**. It pairs with the [ReactProjectSample](https://github.com/debmalyo-hub07/ReactProjectSample.git) frontend, which consumes the JSON API below.
+
+---
 
 ## 🚀 Features
 - Citizen complaint registration and tracking
 - Issue categorization (roads, water, sanitation, electricity, etc.)
 - Admin dashboard for managing and updating complaints
-- Status updates for reported issues
-- Centralized database for complaint and user data
-- Simple and user-friendly interface
+- Work-status updates with progress photos
+- Super-admin usage analytics + account management
+- Photo storage as binary in MongoDB, served at `/photo/:id`
+- Centralized database for complaint, status, and user data
 
 ## 🛠️ Tech Stack
-- Frontend: HTML, CSS, JavaScript
-- Backend: Node.js, Express.js
-- Database: MongoDB
-- Tools: VS Code, Git
+| Layer | Choice |
+|-------|--------|
+| Runtime | Node.js (≥ 20.19 recommended, to match the Vite frontend) |
+| Framework | Express 5 |
+| Database | MongoDB — native `mongodb` driver (**no Mongoose**), db name `FixMyCity` |
+| Views | EJS (server-rendered fallback; SPA uses JSON) |
+| Sessions | `express-session` |
+| Uploads | `multer` (in-memory) |
+| Auth | Custom header/session middleware (`middleware/is-auth.js`) |
 
 ## ⚙️ Installation & Setup
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/your-username/FixMyCity.git
-<<<<<<< HEAD
-   ```
 
-2. Navigate to the project directory:
-   ```bash
-   cd FixMyCity
-   ```
-
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-
-4. Start the server:
-   ```bash
-   npm start
-   ```
-
-5. Open your browser and visit:
-   ```bash
-   http://localhost:3000
-   ```
-=======
-
-Navigate to the project directory:
-cd FixMyCity
-
-Install dependencies:
+```bash
+git clone https://github.com/debmalyo-hub07/NodeProjectSample.git
+cd NodeProjectSample
 npm install
+cp .env.example .env      # then fill in real values
+npm start                 # nodemon app.js → http://localhost:3000
+```
 
-Start the server:
-npm start
+### Environment (`.env`)
 
-Open your browser and visit:
-http://localhost:3000
->>>>>>> 184034bc8c6837221ddbac54acd5c9fecd470c1b
+```
+MONGO_URL=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/
+SESSION_SECRET=change-me-to-a-long-random-string
+```
 
-**🎯 Purpose**
+`MONGO_URL` is **required** — the app throws on boot if unset. `.env` is gitignored; never commit it.
 
-The goal of FixMyCity is to reduce communication gaps between citizens and municipal bodies by providing a transparent, digital platform for civic issue reporting and resolution.
+---
 
-**📌 Future Enhancements**
+## 🧭 Architecture
 
-<<<<<<< HEAD
-- Image upload for issue reporting
-- Role-based access control
+```
+app.js                 # Express app, CORS, session, route mounting, dbConnect → listen(3000)
+controller/            # Request handlers
+  auth.js              # login / signup / logout
+  citizen.js           # citizen home, register complaint, details, profile
+  admin.js             # admin/superadmin home, status update, details, profile, usage, users
+routes/                # Route tables → controllers
+  auth.js  user.js  admin.js  superadmin.js  images.js
+middleware/is-auth.js  # Resolves userId/role from Authorization header ("id:role") or session
+models/                # Thin classes over the raw MongoDB driver
+  complaint.js  user.js  status.js  photo.js
+utils/                 # databaseUtil (connect/getDb), pathUtil, uploadUtil
+data/                  # complaints.json, status.json (sample data)
+views/                 # EJS templates (auth / citizen / admin / partials)
+public/                # Static css/js/images
+```
+
+### Data model (field names are load-bearing — the SPA binds to them)
+
+- **Complaint** (`complaints`): `id` (string), `issuetype`, `title`, `description`, `photoUrl`, `locationUrl`, `createdAt`, `_id`. **Link by string `id`, not `_id`.**
+- **User** (`users`): `id`, `firstname`, `lastname`, `email`, `mobile`, `address`, `city`, `state`, `aadhar`, `password` (plain text ⚠️), `role`, `_id`.
+- **Status** (`statuses`): `complaintId` (= Complaint.id), `workstatus`, `title`, `description`, `photoUrl`, `dateTime`, `userId`, `_id`.
+- **Photo** (`photos`): `id`, `data` (Buffer), `contentType`, `createdAt`, `_id`. Served raw at `/photo/:photoId`.
+
+### Roles
+`citizen`, `admin`, `superadmin`. `is-auth` treats `superadmin` as satisfying an `admin` requirement. Super-admin login is OTP-gated on the frontend.
+
+---
+
+## 🔌 API surface
+
+| Method | Path | Purpose |
+|--------|------|---------|
+| POST | `/auth/login` | Authenticate → `{ success, user{ id, role, name, ... } }` |
+| POST | `/auth/signup` | Register (body: firstname…role) |
+| POST | `/auth/logout` | Destroy session |
+| GET | `/user/home` | `{ registeredComplaints[], statusMap{id:status}, isLoggedIn }` |
+| POST | `/user/register` | New complaint (multipart, file field `photo`; body `issuetype,title,description,locationUrl`) |
+| GET | `/user/complaintDetails/:id` | `{ success, complaint, statusUpdates[] }` |
+| GET/POST | `/user/profile` · `/user/profile/update` | Citizen profile (password stripped on read) |
+| GET | `/admin/home` | `{ success, complaints[], statusMap }` |
+| GET | `/admin/complaintDetails/:id` | `{ success, complaint, statusUpdates[] }` |
+| POST | `/admin/statusUpdate/:id` | New status (multipart, file `photo`; body `workstatus,title,description,dateTime`) |
+| GET/POST | `/admin/profile` · `/admin/profile/update` | Admin profile |
+| GET | `/superadmin/usage` · `/superadmin/users` | Stats + admin/citizen lists |
+| GET | `/photo/:photoId` | Raw image bytes |
+
+All `/user`, `/admin`, `/superadmin` routes require auth (`is-auth`). The SPA sends `Authorization: id:role`. CORS allows any `localhost`/`127.0.0.1` origin so the Vite dev server (`:5173`) can call the API.
+
+---
+
+## 🎯 Purpose
+Reduce the communication gap between citizens and municipal bodies via a transparent, digital platform for civic issue reporting and resolution.
+
+## 📌 Future Enhancements
+- Hash passwords (currently plain text — **do before any real deployment**)
+- Schema validation on the data layer
 - Notification system (email/SMS)
 - Mobile application support
-- Analytics dashboard for authorities
-=======
--Image upload for issue reporting
+- Collision-safe IDs (currently `Math.random()` strings)
 
--Role-based access control
+See [CLAUDE.md](./CLAUDE.md) for agent/workflow conventions.
 
--Notification system (email/SMS)
-
--Mobile application support
-
--Analytics dashboard for authorities
->>>>>>> 184034bc8c6837221ddbac54acd5c9fecd470c1b
-
-👤 Author
-
+## 👤 Author
 **Debarun Roy**
