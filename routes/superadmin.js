@@ -55,14 +55,16 @@ router.get('/usage', (req, res) => {
         }
       });
 
-      // Complaint with longest pending time
+      // Complaint with longest pending time (oldest creation date among pending).
       let longestPendingComplaint = null;
       let maxPendingMs = 0;
       complaints.forEach(c => {
         const latest = statusMap && statusMap[c.id || c._id];
         const rawStatus = (latest ? latest.workstatus : (c.status || 'pending')).toLowerCase();
         const isPending = !rawStatus.includes('progress') && !rawStatus.includes('work-on-progress') && !rawStatus.includes('complete') && !rawStatus.includes('resolve');
-        if (isPending) {
+        // Skip empty/corrupt records that carry no usable content at all.
+        const hasContent = !!(c.title || c.issuetype || c.description);
+        if (isPending && hasContent) {
           const { ObjectId } = require('mongodb');
           let cDate = c.createdAt;
           if (!cDate && c._id) {
@@ -82,7 +84,13 @@ router.get('/usage', (req, res) => {
       if (longestPendingComplaint) {
         const days = Math.floor(maxPendingMs / (1000 * 60 * 60 * 24));
         const hours = Math.floor((maxPendingMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        longestPendingInfo = `"${longestPendingComplaint.title}" (${days}d ${hours}h)`;
+        // Fall back through available fields when the complaint has no title.
+        const c = longestPendingComplaint;
+        let label = c.title || c.issuetype || c.description || '';
+        label = (typeof label === 'string' ? label : '').trim();
+        if (label.length > 40) label = label.slice(0, 40) + '…';
+        if (!label) label = 'Untitled complaint';
+        longestPendingInfo = `"${label}" (${days}d ${hours}h)`;
       }
 
       // Categories of problem that is maximum reported
@@ -100,32 +108,6 @@ router.get('/usage', (req, res) => {
         }
       });
 
-      // Timeline for the ogive (cumulative frequency) graph.
-      // Group complaints by calendar day using createdAt (falling back to the
-      // ObjectId timestamp), starting from the oldest registered complaint.
-      const { ObjectId: OID } = require('mongodb');
-      const dayCounts = {};
-      complaints.forEach(c => {
-        let cDate = c.createdAt;
-        if (!cDate && c._id) {
-          try { cDate = new OID(c._id).getTimestamp(); } catch (err) {}
-        }
-        if (!cDate) return;
-        const d = new Date(cDate);
-        if (isNaN(d.getTime())) return;
-        // Normalise to YYYY-MM-DD (local day bucket)
-        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-        dayCounts[key] = (dayCounts[key] || 0) + 1;
-      });
-
-      // Sort day buckets ascending (oldest first) and build a cumulative series.
-      const sortedDays = Object.keys(dayCounts).sort();
-      let running = 0;
-      const timeline = sortedDays.map(day => {
-        running += dayCounts[day];
-        return { date: day, count: dayCounts[day], cumulative: running };
-      });
-
       res.json({
         success: true,
         stats: {
@@ -135,8 +117,7 @@ router.get('/usage', (req, res) => {
           completed,
           maxLocation,
           longestPending: longestPendingInfo,
-          maxCategory,
-          timeline
+          maxCategory
         }
       });
     });
