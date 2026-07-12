@@ -100,6 +100,32 @@ router.get('/usage', (req, res) => {
         }
       });
 
+      // Timeline for the ogive (cumulative frequency) graph.
+      // Group complaints by calendar day using createdAt (falling back to the
+      // ObjectId timestamp), starting from the oldest registered complaint.
+      const { ObjectId: OID } = require('mongodb');
+      const dayCounts = {};
+      complaints.forEach(c => {
+        let cDate = c.createdAt;
+        if (!cDate && c._id) {
+          try { cDate = new OID(c._id).getTimestamp(); } catch (err) {}
+        }
+        if (!cDate) return;
+        const d = new Date(cDate);
+        if (isNaN(d.getTime())) return;
+        // Normalise to YYYY-MM-DD (local day bucket)
+        const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        dayCounts[key] = (dayCounts[key] || 0) + 1;
+      });
+
+      // Sort day buckets ascending (oldest first) and build a cumulative series.
+      const sortedDays = Object.keys(dayCounts).sort();
+      let running = 0;
+      const timeline = sortedDays.map(day => {
+        running += dayCounts[day];
+        return { date: day, count: dayCounts[day], cumulative: running };
+      });
+
       res.json({
         success: true,
         stats: {
@@ -109,7 +135,8 @@ router.get('/usage', (req, res) => {
           completed,
           maxLocation,
           longestPending: longestPendingInfo,
-          maxCategory
+          maxCategory,
+          timeline
         }
       });
     });
